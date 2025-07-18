@@ -305,7 +305,7 @@ function HomeScreen({
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
             <div className="absolute bottom-4 left-4 right-4">
-              <p className="text-xs text-gray-300 mb-1">MH 12 AB 1234</p>
+              <p className="text-xs text-gray-300 mb-1">KA 12 AB 1234</p>
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-lg font-bold text-white">Your EV Journey</h2>
@@ -366,7 +366,7 @@ function HomeScreen({
 
         {/* AI Recommendation */}
         {aiRecommendations.length > 0 && (
-          <Card className="bg-gradient-to-r from-purple-700 to-blue-700 border-purple-500/30">
+          <Card className="bg-gradient-to-r from-purple-600 to-blue-600 border-purple-500/30">
             <CardContent className="p-4">
               <div className="flex items-center space-x-3">
                 <Brain className="w-6 h-6 text-purple-400" />
@@ -829,7 +829,7 @@ function BookingScreen({ chargers, setCurrentScreen }: any) {
 
       <div className="space-y-3">
         <Button
-          className="w-full bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-400 hover:to-blue-400 text-white"
+          className="w-full bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-400 hover:to-blue-500 text-white"
           onClick={() => setCurrentScreen("payment-methods")}
         >
           Proceed to Payment - ₹{estimatedCost}
@@ -907,7 +907,7 @@ function RoutePlanningScreen({ setCurrentScreen }: any) {
           />
         </div>
         <Button
-          className="w-full bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-400 hover:to-blue-400 text-white"
+          className="w-full bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-400 hover:to-blue-500 text-white"
           onClick={() => setRouteCalculated(true)}
         >
           <Route className="w-4 h-4 mr-2" />
@@ -969,20 +969,24 @@ function SettingsScreen({ setCurrentScreen }: any) {
   const [ecoMode, setEcoMode] = useState(false)
 
   return (
-    <div className="flex-1 flex flex-col p-4 pt-12 pb-4">
-      <div className="flex items-center mb-6">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setCurrentScreen("profile")}
-          className="mr-3 hover:bg-gray-700/50"
-        >
-          <ArrowLeft className="w-5 h-5 text-white" />
-        </Button>
-        <h1 className="text-xl font-bold text-white">Charging Settings</h1>
+    <div className="flex flex-col h-full overflow-hidden">
+      {/* Fixed Header */}
+      <div className="flex-shrink-0 p-4 pt-12">
+        <div className="flex items-center mb-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setCurrentScreen("profile")}
+            className="mr-3 hover:bg-gray-700/50"
+          >
+            <ArrowLeft className="w-5 h-5 text-white" />
+          </Button>
+          <h1 className="text-xl font-bold text-white">Charging Settings</h1>
+        </div>
       </div>
 
-      <div className="space-y-4 overflow-y-auto">
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-4">
         <Card className="bg-gray-800/60 border-gray-700/50">
           <CardHeader>
             <CardTitle className="text-lg text-white">Smart Charging</CardTitle>
@@ -1248,80 +1252,86 @@ function RewardsScreen({ setCurrentScreen, rewardPoints }: any) {
   ]
 
   return (
-    <div className="flex-1 flex flex-col p-4 pt-12 pb-4">
-      <div className="flex items-center mb-6">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setCurrentScreen("home")}
-          className="mr-3 hover:bg-gray-700/50"
-        >
-          <ArrowLeft className="w-5 h-5 text-white" />
-        </Button>
-        <h1 className="text-xl font-bold text-white">EV Rewards</h1>
+    <div className="flex flex-col h-full overflow-hidden">
+      {/* Fixed Header */}
+      <div className="flex-shrink-0 p-4 pt-12">
+        <div className="flex items-center mb-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setCurrentScreen("home")}
+            className="mr-3 hover:bg-gray-700/50"
+          >
+            <ArrowLeft className="w-5 h-5 text-white" />
+          </Button>
+          <h1 className="text-xl font-bold text-white">EV Rewards</h1>
+        </div>
       </div>
 
-      {/* Points Balance */}
-      <Card className="bg-gradient-to-r from-yellow-900/40 to-orange-900/40 border-yellow-500/30 mb-6">
-        <CardContent className="p-6 text-center">
-          <Gift className="w-12 h-12 text-yellow-400 mx-auto mb-3" />
-          <p className="text-3xl font-bold text-white">{rewardPoints}</p>
-          <p className="text-gray-300">Reward Points</p>
-          <p className="text-xs text-gray-400 mt-2">Earn points with every charge!</p>
-        </CardContent>
-      </Card>
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-4">
+        {/* Points Balance */}
+        <Card className="bg-gradient-to-r from-yellow-900/40 to-orange-900/40 border-yellow-500/30">
+          <CardContent className="p-6 text-center">
+            <Gift className="w-12 h-12 text-yellow-400 mx-auto mb-3" />
+            <p className="text-3xl font-bold text-white">{rewardPoints}</p>
+            <p className="text-gray-300">Reward Points</p>
+            <p className="text-xs text-gray-400 mt-2">Earn points with every charge!</p>
+          </CardContent>
+        </Card>
 
-      {/* Available Rewards */}
-      <h2 className="text-lg font-semibold text-white mb-4">Available Rewards</h2>
-      <div className="flex-1 space-y-3 overflow-y-auto">
-        {rewards.map((reward) => (
-          <Card key={reward.id} className="bg-gray-800/60 border-gray-700/50">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <h3 className="font-semibold text-white">{reward.name}</h3>
-                  <div className="flex items-center mt-1">
-                    <Sparkles className="w-4 h-4 text-yellow-400 mr-1" />
-                    <span className="text-sm text-gray-300">{reward.points} points</span>
+        {/* Available Rewards */}
+        <h2 className="text-lg font-semibold text-white">Available Rewards</h2>
+        <div className="space-y-3">
+          {rewards.map((reward) => (
+            <Card key={reward.id} className="bg-gray-800/60 border-gray-700/50">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-white">{reward.name}</h3>
+                    <div className="flex items-center mt-1">
+                      <Sparkles className="w-4 h-4 text-yellow-400 mr-1" />
+                      <span className="text-sm text-gray-300">{reward.points} points</span>
+                    </div>
                   </div>
+                  <Button
+                    size="sm"
+                    disabled={!reward.available || rewardPoints < reward.points}
+                    className={
+                      reward.available && rewardPoints >= reward.points
+                        ? "bg-teal-500 hover:bg-teal-400 text-white"
+                        : "bg-gray-600 text-gray-400"
+                    }
+                  >
+                    {reward.available && rewardPoints >= reward.points ? "Redeem" : "Locked"}
+                  </Button>
                 </div>
-                <Button
-                  size="sm"
-                  disabled={!reward.available || rewardPoints < reward.points}
-                  className={
-                    reward.available && rewardPoints >= reward.points
-                      ? "bg-teal-500 hover:bg-teal-400 text-white"
-                      : "bg-gray-600 text-gray-400"
-                  }
-                >
-                  {reward.available && rewardPoints >= reward.points ? "Redeem" : "Locked"}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-      {/* How to Earn */}
-      <Card className="bg-gray-800/60 border-gray-700/50 mt-4">
-        <CardHeader>
-          <CardTitle className="text-lg text-white">How to Earn Points</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-gray-300">Complete charging session</span>
-            <span className="text-teal-400">+10 pts per ₹100</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-300">Rate charging station</span>
-            <span className="text-teal-400">+50 pts</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-300">Refer a friend</span>
-            <span className="text-teal-400">+500 pts</span>
-          </div>
-        </CardContent>
-      </Card>
+        {/* How to Earn */}
+        <Card className="bg-gray-800/60 border-gray-700/50">
+          <CardHeader>
+            <CardTitle className="text-lg text-white">How to Earn Points</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-gray-300">Complete charging session</span>
+              <span className="text-teal-400">+10 pts per ₹100</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-300">Rate charging station</span>
+              <span className="text-teal-400">+50 pts</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-300">Refer a friend</span>
+              <span className="text-teal-400">+500 pts</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }
@@ -1348,12 +1358,12 @@ function AIRecommendationsScreen({ setCurrentScreen, recommendations }: any) {
             <Card key={rec.id} className="bg-gradient-to-r from-purple-900/40 to-blue-900/40 border-purple-500/30">
               <CardContent className="p-4">
                 <div className="flex items-start space-x-3">
-                  <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                    <Icon className="w-5 h-5 text-purple-400" />
+                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500/60 to-purple-500/80 rounded-lg flex items-center justify-center">
+                    <Icon className="w-5 h-5 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-white mb-1">{rec.title}</h3>
-                    <p className="text-sm text-gray-300 mb-2">{rec.description}</p>
+                    <h3 className="font-semibold text-black mb-1">{rec.title}</h3>
+                    <p className="text-sm text-black mb-2">{rec.description}</p>
                     <div className="flex items-center justify-between">
                       <Badge className="bg-green-500 text-xs">{rec.savings}</Badge>
                       <Button size="sm" className="bg-purple-500 hover:bg-purple-400 text-white text-xs">
@@ -1509,7 +1519,7 @@ function PaymentMethodsScreen({ setCurrentScreen }: any) {
       </Card>
 
       <Button
-        className="w-full bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-400 hover:to-blue-400 text-white"
+        className="w-full bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-400 hover:to-blue-500 text-white"
         onClick={() => setCurrentScreen("home")}
       >
         Pay ₹295.00 & Book Charger
@@ -1617,7 +1627,11 @@ function MapScreen({ chargers, setCurrentScreen }: any) {
     <div className="flex-1 flex flex-col p-4 pt-12 pb-4">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-bold text-white">Map View</h1>
-        <Button size="sm" className="bg-teal-500 hover:bg-teal-400 text-white text-xs">
+        <Button
+          size="sm"
+          className="bg-teal-500 hover:bg-teal-400 text-white text-xs"
+          onClick={() => window.open("https://www.google.com/maps/search/?api=1&query=EV+Charging+Stations+near+me", "_blank")}
+        >
           <Navigation className="w-3 h-3 mr-1" />
           Navigate
         </Button>
@@ -1625,12 +1639,8 @@ function MapScreen({ chargers, setCurrentScreen }: any) {
 
       <div className="bg-gray-800/60 rounded-lg flex-1 mb-4 flex items-center justify-center">
         <div className="text-center">
-          <img
-            className="w-12 h-12 mx-auto mb-2"
-            src="https://maps.gstatic.com/mapfiles/transparent.png"
-            alt="Google Maps"
-          />
-          <p className="text-gray-300">Interactive map</p>
+          <img src="/ev-map-1.png" alt="Google Maps" className="max-w-[420px] h-[280px]" />
+          {/* <p className="text-gray-300">Interactive map</p> */}
           <p className="text-xs text-gray-400">{chargers.length} nearby chargers</p>
         </div>
       </div>
