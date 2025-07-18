@@ -247,7 +247,22 @@ export default function EVChargingApp() {
   return (
     <div className="h-screen text-white overflow-hidden" style={{ backgroundColor: "#141F1C" }}>
       <div className="max-w-md mx-auto h-full flex flex-col">
-        {renderScreen()}
+        <div className="flex-1 overflow-y-auto p-4">
+          {renderScreen()}
+          {/* Voice Assistant Button - Moved inside the main content */}
+          <div className="fixed bottom-24 right-8 z-50">
+            <Button
+              size="icon"
+              className="w-14 h-14 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-500 shadow-lg border-2 border-white/20"
+              onClick={() => setCurrentScreen("voice-assistant")}
+            >
+              <Mic className="w-6 h-6 text-white" />
+            </Button>
+          </div>
+
+          {/* Extra padding for floating button */}
+          <div className="h-20"></div>
+        </div>
         <BottomNavigation currentScreen={currentScreen} setCurrentScreen={setCurrentScreen} />
       </div>
     </div>
@@ -389,7 +404,7 @@ function HomeScreen({
         {/* Current Charging Status */}
         {isCharging && (
           <div className="overflow-y-auto max-h-[calc(100vh-280px)]">
-            <Card className="bg-gradient-to-r from-teal-900/60 to-green-900/60 border-teal-500/30">
+            <Card className="bg-green-900 border-teal-500/30">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm text-white">Currently Charging</span>
@@ -502,15 +517,6 @@ function HomeScreen({
       </div>
 
       {/* Voice Assistant Floating Button */}
-      <div className="fixed bottom-24 right-4 z-50">
-        <Button
-          size="icon"
-          className="w-14 h-14 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 shadow-lg border-2 border-white/20"
-          onClick={() => setCurrentScreen("voice-assistant")}
-        >
-          <Mic className="w-6 h-6 text-white" />
-        </Button>
-      </div>
     </div>
   )
 }
@@ -1119,14 +1125,14 @@ function AnalyticsScreen({ setCurrentScreen }: any) {
         <div className="space-y-6">
           {/* Key Metrics */}
           <div className="grid grid-cols-2 gap-3">
-            <Card className="bg-gradient-to-br from-teal-900/40 to-blue-900/40 border-teal-500/30">
+            <Card className="bg-teal-800 border-teal-500/30">
               <CardContent className="p-4 text-center">
                 <TrendingUp className="w-6 h-6 text-teal-400 mx-auto mb-2" />
                 <p className="text-2xl font-bold text-white">1,247</p>
                 <p className="text-xs text-gray-300">kWh This Month</p>
               </CardContent>
             </Card>
-            <Card className="bg-gradient-to-br from-green-900/40 to-teal-900/40 border-green-500/30">
+            <Card className="bg-green-800 border-green-500/30">
               <CardContent className="p-4 text-center">
                 <IndianRupee className="w-6 h-6 text-green-400 mx-auto mb-2" />
                 <p className="text-2xl font-bold text-white">₹2,156</p>
@@ -1136,14 +1142,14 @@ function AnalyticsScreen({ setCurrentScreen }: any) {
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <Card className="bg-gradient-to-br from-purple-900/40 to-blue-900/40 border-purple-500/30">
+            <Card className="bg-purple-800 border-purple-500/30">
               <CardContent className="p-4 text-center">
                 <Zap className="w-6 h-6 text-purple-400 mx-auto mb-2" />
                 <p className="text-2xl font-bold text-white">23</p>
                 <p className="text-xs text-gray-300">Charging Sessions</p>
               </CardContent>
             </Card>
-            <Card className="bg-gradient-to-br from-yellow-900/40 to-orange-900/40 border-yellow-500/30">
+            <Card className="bg-yellow-800 border-yellow-500/30">
               <CardContent className="p-4 text-center">
                 <Battery className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
                 <p className="text-2xl font-bold text-white">{kwhPerRupee}</p>
@@ -1271,7 +1277,7 @@ function RewardsScreen({ setCurrentScreen, rewardPoints }: any) {
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-4">
         {/* Points Balance */}
-        <Card className="bg-gradient-to-r from-yellow-900/40 to-orange-900/40 border-yellow-500/30">
+        <Card className="bg-yellow-900/30 border-yellow-500/30">
           <CardContent className="p-6 text-center">
             <Gift className="w-12 h-12 text-yellow-400 mx-auto mb-3" />
             <p className="text-3xl font-bold text-white">{rewardPoints}</p>
@@ -1410,7 +1416,7 @@ function PaymentMethodsScreen({ setCurrentScreen }: any) {
 
   return (
     <div className="flex-1 flex flex-col p-4 pt-12 pb-4">
-      <div className="flex items-center mb-6">
+      <div className="sticky top-0 z-10 flex items-center bg-gray-900 p-4">
         <Button
           variant="ghost"
           size="icon"
@@ -1422,7 +1428,7 @@ function PaymentMethodsScreen({ setCurrentScreen }: any) {
         <h1 className="text-xl font-bold text-white">Payment Methods</h1>
       </div>
 
-      <div className="space-y-4 mb-6">
+      <div className="overflow-y-auto h-[calc(100vh-24rem)]">
         {/* UPI Payment */}
         <Card
           className={`bg-gray-800/60 border-gray-700/50 cursor-pointer ${selectedMethod === "upi" ? "ring-2 ring-teal-400" : ""}`}
@@ -1493,7 +1499,7 @@ function PaymentMethodsScreen({ setCurrentScreen }: any) {
       </div>
 
       {/* Payment Summary */}
-      <Card className="bg-gradient-to-r from-teal-900/40 to-blue-900/40 border-teal-500/30 mb-6">
+      <Card className="bg-teal-900/40 border-teal-500/30 mb-6">
         <CardContent className="p-4">
           <h3 className="font-semibold text-white mb-3">Payment Summary</h3>
           <div className="space-y-2 text-sm">
