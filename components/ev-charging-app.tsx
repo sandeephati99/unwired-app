@@ -3,7 +3,9 @@
 import React from "react"
 import { useState } from "react"
 import Image from "next/image"
+import confetti from "canvas-confetti"
 import {
+  Check,
   Home,
   MapPin,
   Zap,
@@ -18,6 +20,7 @@ import {
   CreditCard,
   Gift,
   TrendingUp,
+  ExternalLink,
   Brain,
   Sparkles,
   IndianRupee,
@@ -31,6 +34,8 @@ import {
   Coffee,
   ShoppingBag,
   Utensils,
+  Plus,
+  ChevronDown,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -41,6 +46,7 @@ import { Switch } from "@/components/ui/switch"
 import { Slider } from "@/components/ui/slider"
 import { Line, LineChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { useToast } from "@/components/ui/use-toast"
 
 type Screen =
   | "home"
@@ -59,6 +65,7 @@ type Screen =
   | "ai-recommendations"
   | "payment-methods"
   | "voice-assistant"
+  | "wireless-waitlist"
 
 export default function EVChargingApp() {
   const [currentScreen, setCurrentScreen] = useState<Screen>("home")
@@ -81,6 +88,7 @@ export default function EVChargingApp() {
       power: "150kW",
       connector: "CCS2",
       lastCharged: "15 min ago",
+      online: true,
     },
     {
       id: 2,
@@ -96,6 +104,7 @@ export default function EVChargingApp() {
       power: "60kW",
       connector: "CCS2",
       lastCharged: "2 hours ago",
+      online: true,
     },
     {
       id: 3,
@@ -108,9 +117,10 @@ export default function EVChargingApp() {
       fastCharge: false,
       status: "Busy",
       features: ["WiFi", "Cafe Nearby", "Security"],
-      power: "22kW",
+      power: "22kW",        
       connector: "Type 2",
       lastCharged: "Yesterday",
+      online: false,
     },
     {
       id: 4,
@@ -126,6 +136,7 @@ export default function EVChargingApp() {
       power: "120kW",
       connector: "CCS2",
       lastCharged: "3 days ago",
+      online: true,
     },
     {
       id: 5,
@@ -141,7 +152,8 @@ export default function EVChargingApp() {
       power: "22kW",
       connector: "Type 2",
       lastCharged: "1 week ago",
-    },
+      online: true,
+      },
     {
       id: 6,
       name: "Relux Electric",
@@ -156,6 +168,7 @@ export default function EVChargingApp() {
       power: "180kW",
       connector: "CCS2",
       lastCharged: "5 days ago",
+      online: true,
     },
   ]
 
@@ -230,6 +243,8 @@ export default function EVChargingApp() {
         return <PaymentMethodsScreen setCurrentScreen={setCurrentScreen} />
       case "voice-assistant":
         return <VoiceAssistantScreen setCurrentScreen={setCurrentScreen} />
+      case "wireless-waitlist":
+        return <WirelessWaitlistScreen setCurrentScreen={setCurrentScreen} />
       default:
         return (
           <HomeScreen
@@ -277,6 +292,32 @@ function HomeScreen({
   rewardPoints,
   aiRecommendations,
 }: any) {
+  const { toast } = useToast();
+  const [isVehicleCollapsed, setIsVehicleCollapsed] = useState(false);
+
+  const toggleVehicleCollapse = () => {
+    setIsVehicleCollapsed(!isVehicleCollapsed);
+  };
+
+  const handleJoinWaitlist = () => {
+    toast({
+      title: "You're on the list!",
+      description: "Thank you for joining the wireless charging waitlist. We'll notify you as soon as it's available in your area!",
+      duration: 5000,
+      variant: "default",
+      onOpenChange: (open) => {
+        if (open) {
+          confetti({
+            particleCount: 200,
+            spread: 70,
+            origin: {
+              y: 0.7,
+            },
+          });
+        }
+      },
+    });
+  };
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Fixed Header */}
@@ -338,30 +379,49 @@ function HomeScreen({
         </div>
 
         {/* Enhanced Vehicle Info */}
-        <Card className="bg-gray-800/60 border-gray-700/50 backdrop-blur-sm">
-          <CardContent className="p-5">
-            <div className="flex items-center space-x-4 mb-4">
-              {/* Removed Car Icon */}
-              <div className="flex-1">
-                <h3 className="font-bold text-lg text-white">Tata Nexon EV Max</h3>
-                <div className="flex items-center text-sm text-gray-300 mt-1">
-                  <Battery className="w-4 h-4 mr-1 text-teal-400" />
-                  <span className="text-white font-semibold">78%</span>
-                  <span className="mx-2">•</span>
-                  <span>312 km range</span>
+        <Card className="bg-gray-800/60 border-gray-700/50 backdrop-blur-sm overflow-hidden">
+          <div 
+            className="cursor-pointer"
+            onClick={toggleVehicleCollapse}
+          >
+            <CardContent className="p-5">
+              <div className="flex items-center space-x-4">
+                <div className="flex-1">
+                  <div className="flex items-center">
+                    <h3 className="font-bold text-lg text-white mr-2">Tata Nexon EV Max</h3>
+                    <ChevronDown 
+                      className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isVehicleCollapsed ? 'transform -rotate-90' : ''}`} 
+                    />
+                  </div>
+                  {!isVehicleCollapsed && (
+                    <div className="flex items-center text-sm text-gray-300 mt-1">
+                      <Battery className="w-4 h-4 mr-1 text-teal-400" />
+                      <span className="text-white font-semibold">78%</span>
+                      <span className="mx-2">•</span>
+                      <span>312 km range</span>
+                    </div>
+                  )}
+                </div>
+                <div className="text-right">
+                  {!isVehicleCollapsed && (
+                    <>
+                      <p className="text-xs text-gray-400">Last charged</p>
+                      <p className="text-sm font-medium text-white">2 hours ago</p>
+                    </>
+                  )}
+                  <div className="flex items-center mt-1 justify-end">
+                    <Sparkles className="w-3 h-3 text-yellow-400 mr-1" />
+                    <span className="text-xs text-yellow-400">{rewardPoints} pts</span>
+                  </div>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-xs text-gray-400">Last charged</p>
-                <p className="text-sm font-medium text-white">2 hours ago</p>
-                <div className="flex items-center mt-1">
-                  <Sparkles className="w-3 h-3 text-yellow-400 mr-1" />
-                  <span className="text-xs text-yellow-400">{rewardPoints} pts</span>
-                </div>
-              </div>
-            </div>
+            </CardContent>
+          </div>
 
-            {/* Vehicle Stats */}
+          {/* Vehicle Stats */}
+          <div 
+            className={`px-5 pb-5 transition-all duration-200 ease-in-out ${isVehicleCollapsed ? 'max-h-0 opacity-0 overflow-hidden' : 'max-h-96 opacity-100'}`}
+          >
             <div className="grid grid-cols-3 gap-3 text-center">
               <div className="bg-gray-700/30 rounded-lg p-2">
                 <p className="text-xs text-gray-400">Efficiency</p>
@@ -374,6 +434,57 @@ function HomeScreen({
               <div className="bg-gray-700/30 rounded-lg p-2">
                 <p className="text-xs text-gray-400">Saved CO₂</p>
                 <p className="text-sm font-bold text-white">89 kg</p>
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* Wireless Charging Coming Soon */}
+        <Card className="bg-gradient-to-r from-blue-600 to-indigo-600 border-blue-500/30">
+          <CardContent className="p-4">
+            <div className="flex items-start space-x-3">
+              <div className="flex-1">
+                <div className="flex items-center mb-1">
+                  <Zap className="w-4 h-4 text-yellow-400 mr-1" />
+                  <h3 className="font-semibold text-sm text-white">Introducing Wireless Charging</h3>
+                </div>
+                <p className="text-xs text-gray-200 mb-3">Experience the future of EV charging. No cables, no hassle. Coming soon to select locations.</p>
+                <div className="grid grid-cols-2 gap-3 mt-4 mb-4">
+                  <div className="flex items-center space-x-3">
+                    <Check className="w-4 h-4 text-green-400" />
+                    <p className="text-xs text-gray-200">Fast Charging</p>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Check className="w-4 h-4 text-green-400" />
+                    <p className="text-xs text-gray-200">Convenient</p>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Check className="w-4 h-4 text-green-400" />
+                    <p className="text-xs text-gray-200">Easy to Use</p>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Check className="w-4 h-4 text-green-400" />
+                    <p className="text-xs text-gray-200">No Cables Required</p>
+                  </div>
+                </div> 
+                
+                <div className="relative w-full h-0 pt-6" style={{ paddingBottom: "56.25%" }}>
+                  <iframe
+                    className="absolute inset-0 w-full h-full pb-4"
+                    src="https://www.youtube-nocookie.com/embed/upVgwemoha0"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+                
+                <Button
+                  size="sm"
+                  className="w-full bg-white/10 hover:bg-white/20 text-white text-xs border border-white/20"
+                  onClick={() => handleJoinWaitlist()}
+                >
+                  Join Waitlist
+                </Button>
               </div>
             </div>
           </CardContent>
@@ -420,10 +531,25 @@ function HomeScreen({
                     style={{ width: `${chargingProgress}%` }}
                   />
                 </Progress>
-                <div className="flex justify-between text-xs text-white">
+                <div className="flex justify-between text-xs text-white mb-2">
                   <span>15 min remaining</span>
                   <span>₹125.50</span>
                 </div>
+                <Button 
+                  variant="outline" 
+                  className="w-full text-xs h-8 bg-white/10 hover:bg-white/20 text-white border-white/20"
+                  onClick={() => {
+                    // TODO: Implement widget addition logic
+                    toast({
+                      title: "Added to Widget",
+                      description: "Charging status is now available on your home screen",
+                      duration: 3000,
+                    });
+                  }}
+                >
+                  <Plus className="w-3.5 h-3.5 mr-1" />
+                  Add to Widget
+                </Button>
               </CardContent>
             </Card>
           </div>
@@ -465,7 +591,12 @@ function HomeScreen({
             <Card key={charger.id} className="bg-gray-800/60 border-gray-700/50 backdrop-blur-sm">
               <CardContent className="p-3">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-semibold text-sm text-white">{charger.name}</h3>
+                  <div className="flex items-center">
+                    <h3 className="font-semibold text-sm text-white mr-2">{charger.name}</h3>
+                    <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium ${charger.online ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                      {charger.online ? 'Online' : 'Offline'}
+                    </span>
+                  </div>
                   <Badge className={charger.status === "Available" ? "bg-green-500 text-xs" : "bg-yellow-500 text-xs"}>
                     {charger.available}/{charger.total}
                   </Badge>
@@ -882,49 +1013,40 @@ function RoutePlanningScreen({ setCurrentScreen }: any) {
 
   return (
     <div className="flex-1 flex flex-col p-4 pt-12 pb-4">
-      <div className="flex items-center mb-6">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setCurrentScreen("home")}
-          className="mr-3 hover:bg-gray-700/50"
-        >
-          <ArrowLeft className="w-5 h-5 text-white" />
-        </Button>
+      <div className="flex items-center">
         <h1 className="text-xl font-bold text-white">Smart Route Planning</h1>
       </div>
 
-      <div className="space-y-4 mb-6">
-        <div>
-          <label className="text-sm text-gray-300 mb-2 block">From</label>
-          <Input
-            value={startLocation}
-            onChange={(e) => setStartLocation(e.target.value)}
-            className="bg-gray-800/60 border-gray-600 text-white"
-          />
+      <div className="flex-1 overflow-y-auto mt-4">
+        <div className="space-y-4">
+          <div>
+            <label className="text-sm text-gray-300 mb-2 block">From</label>
+            <Input
+              value={startLocation}
+              onChange={(e) => setStartLocation(e.target.value)}
+              className="bg-gray-800/60 border-gray-600 text-white"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-gray-300 mb-2 block">To</label>
+            <Input
+              placeholder="Enter destination"
+              value={endLocation}
+              onChange={(e) => setEndLocation(e.target.value)}
+              className="bg-gray-800/60 border-gray-600 text-white"
+            />
+          </div>
+          <Button
+            className="w-full bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-400 hover:to-blue-500 text-white"
+            onClick={() => setRouteCalculated(true)}
+          >
+            <Route className="w-4 h-4 mr-2" />
+            Calculate Smart Route
+          </Button>
         </div>
-        <div>
-          <label className="text-sm text-gray-300 mb-2 block">To</label>
-          <Input
-            placeholder="Enter destination"
-            value={endLocation}
-            onChange={(e) => setEndLocation(e.target.value)}
-            className="bg-gray-800/60 border-gray-600 text-white"
-          />
-        </div>
-        <Button
-          className="w-full bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-400 hover:to-blue-500 text-white"
-          onClick={() => setRouteCalculated(true)}
-        >
-          <Route className="w-4 h-4 mr-2" />
-          Calculate Smart Route
-        </Button>
-      </div>
 
-      {routeCalculated && (
-        <div className="flex-1">
-          <h2 className="text-base font-semibold mb-3 text-white">AI-Optimized Routes</h2>
-          <div className="space-y-3 overflow-y-auto">
+        {routeCalculated && (
+          <div className="space-y-3 mt-4 overflow-y-auto">
             {suggestedRoutes.map((route) => (
               <Card key={route.id} className="bg-gray-800/60 border-gray-700/50">
                 <CardContent className="p-4">
@@ -962,8 +1084,8 @@ function RoutePlanningScreen({ setCurrentScreen }: any) {
               </Card>
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
@@ -1930,6 +2052,7 @@ function ChargingScreen({ isCharging, setIsCharging, chargingProgress, setCurren
 }
 
 function ProfileScreen({ setCurrentScreen, rewardPoints }: any) {
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Fixed Header */}
